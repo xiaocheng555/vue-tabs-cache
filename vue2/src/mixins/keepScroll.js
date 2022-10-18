@@ -12,7 +12,7 @@ function getOptions ($options) {
 }
 
 // 配置设置
-export function configSetting () {
+export function configSetting (data) {
   Object.assign(setting, data)
 }
 
