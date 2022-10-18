@@ -45,7 +45,12 @@ const menus = ref([
   {
     link: '/article',
     title: '文章列表'
+  },
+  {
+    link: '/KeepScroll',
+    title: '记录滚动位置'
   }
+  
 ])
 </script>
 

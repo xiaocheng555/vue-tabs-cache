@@ -33,6 +33,15 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
           title: '文章详情'
         }
+      },
+      {
+        path: '/KeepScroll',
+        component: () => import('./views/KeepScroll.vue'),
+        name: 'KeepScroll',
+        meta: {
+          keepAlive: true,
+          title: '记录滚动位置'
+        }
       }
     ]
   }
