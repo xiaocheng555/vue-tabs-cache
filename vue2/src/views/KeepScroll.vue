@@ -5,8 +5,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import useKeepScroll from '@/hooks/useKeepScroll'
-
-useKeepScroll()
+<script>
+export default {
+  name: 'KeepScroll',
+  keepScroll: true,
+  data () {
+    return {
+    }
+  },
+  created () {}
+}
 </script>
+
+<style lang='less' scoped>
+</style>
