@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Vue2</h1>
     <router-view></router-view>
   </div>
 </template>
@@ -11,5 +10,9 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
+* {
+  margin: 0;
+  padding: 0;
+}
 </style>

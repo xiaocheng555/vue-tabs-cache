@@ -9,16 +9,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('./views/Home.vue'),
-        name: 'Home',
+        name: 'home',
         meta: {
-          // keepAlive: true,
+          keepAlive: true,
           title: '首页'
         }
       },
       {
         path: '/article',
         component: () => import('./views/ArticleList.vue'),
-        name: 'ArticleList',
+        name: 'article-list',
         meta: {
           keepAlive: true,
           title: '文章列表'
@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/article/:id',
         component: () => import('./views/Article.vue'),
-        name: 'ArticleDetail',
+        name: 'article-detail',
         props: true,
         meta: {
           keepAlive: true,

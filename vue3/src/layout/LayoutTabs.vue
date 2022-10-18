@@ -73,6 +73,11 @@ function changeCurTab () {
   const componentName = componentDef?.__name
   const tab = tabs.value.find(tab => tab.routeName === name)
   
+  if (!name) {
+    console.warn(`LayoutTabs组件：请给 ${path} 路由配置name`)
+  }
+  
+  // 配置了meta.keepAlive的路由组件添加到缓存
   if (meta.keepAlive) {
     addCache(componentName)
   } else {
@@ -143,7 +148,7 @@ watch(() => route.path, changeCurTab, {
 </script>
 
 <style lang='less' scoped>
-/deep/ .el-tabs__content {
+:deep(.el-tabs__content) {
   display: none;
 }
 </style>

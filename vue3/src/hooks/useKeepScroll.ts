@@ -1,4 +1,5 @@
-import { onActivated, onDeactivated } from 'vue'
+import { onActivated } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 let gobalScrollBox = 'html' // 全局滚动盒子
 
@@ -16,12 +17,11 @@ export default function useKeepScroll (scrollBox?: string) {
       console.warn(`useKeepScroll: 未找到 ${scrollBox || gobalScrollBox} Dom滚动容器`)
       return
     }
-    
     scroller.scrollTop = pos[0]
     scroller.scrollLeft = pos[1]
   })
   
-  onDeactivated(() => {
+  onBeforeRouteLeave(() => {
     if (scroller) {
       pos = [scroller.scrollTop, scroller.scrollLeft]
     }

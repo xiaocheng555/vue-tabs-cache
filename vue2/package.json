@@ -12,7 +12,8 @@
     "core-js": "^3.8.3",
     "element-ui": "^2.15.9",
     "vue": "^2.6.14",
-    "vue-router": "^3.6.4"
+    "vue-router": "^3.6.4",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -39,7 +40,9 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "vue/multi-word-component-names": "off"
+      "vue/multi-word-component-names": "off",
+      "no-debugger": "off",
+      "no-console": "off"
     }
   },
   "browserslist": [

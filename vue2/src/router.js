@@ -1,27 +1,49 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { extendRouterHistoryState } from './router-extend'
 
 const routes = [
   {
     path: '/',
-    component: () => import('./views/Home.vue'),
-    name: 'Home',
-  },
-  {
-    path: '/A',
-    component: () => import('./views/A.vue'),
-    name: 'A',
-  },
-  {
-    path: '/Back',
-    component: () => import('./views/Back.vue'),
-    name: 'Back',
-  },
-  {
-    path: '/Back2',
-    component: () => import('./views/Back2.vue'),
-    name: 'Back2',
+    component: () => import('@/layout/Index.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('./views/Home.vue'),
+        name: 'home',
+        meta: {
+          // keepAlive: true,
+          title: '首页'
+        }
+      },
+      {
+        path: '/article',
+        component: () => import('./views/ArticleList.vue'),
+        name: 'article-list',
+        meta: {
+          keepAlive: true,
+          title: '文章列表'
+        }
+      },
+      {
+        path: '/article/:id',
+        component: () => import('./views/Article.vue'),
+        name: 'article-detail',
+        props: true,
+        meta: {
+          keepAlive: true,
+          title: '文章详情'
+        }
+      },
+      {
+        path: '/KeepScroll',
+        component: () => import('./views/KeepScroll.vue'),
+        name: 'KeepScroll',
+        meta: {
+          keepAlive: true,
+          title: '记录滚动位置'
+        }
+      }
+    ]
   }
 ]
 
@@ -31,6 +53,5 @@ const router = new Router({
   // mode: 'history',
   routes
 })
-extendRouterHistoryState(router)
 
 export default router
