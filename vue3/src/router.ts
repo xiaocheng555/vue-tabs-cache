@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import Empty from './views/Empty.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -47,7 +48,7 @@ const routes: RouteRecordRaw[] = [
         // 空白页，刷新tab页时用来做中转
         path: '/_empty',
         name: '_empty',
-        component: () => import('./views/Empty.vue')
+        component: Empty
       }
     ]
   }

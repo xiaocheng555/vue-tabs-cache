@@ -64,7 +64,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+:deep(.el-menu-item.is-active) {
+  &:focus {
+    color: #303133;
+    background: transparent !important;
+  }
+  color: #303133;
+}
 .layout-container-demo .el-header {
   position: relative;
 }
