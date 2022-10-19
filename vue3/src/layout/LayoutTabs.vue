@@ -12,7 +12,7 @@
         :name="item.routeName"
         :key="item.routeName">
         <template #label>
-          {{item.title}}
+          {{item.title}} <el-icon v-if="item.routeName === currTab" @click="refreshTab"><Refresh /></el-icon>
         </template>
       </el-tab-pane>
     </el-tabs>
@@ -21,10 +21,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRoute, useRouter, LocationQuery, RouteParams, RouteLocationRaw } from 'vue-router'
+import { useRoute, useRouter, LocationQuery, RouteParams } from 'vue-router'
 import { TabsPaneContext } from 'element-plus'
 import useRouteCache from '@/hooks/useRouteCache'
-import useLayoutTab from '@/store/layoutTab'
+import useLayoutStore from '@/store/layout'
 
 const KeepAliveRouteViewDepth = 2 // 【根据项目修改】keep-alive 缓存哪层router-view组件（第二层）
 
@@ -43,7 +43,7 @@ const router = useRouter()
 const tabs = ref<Tab []>([])
 const currTab = ref('')
 const { removeCacheEntry, addCache, removeCache } = useRouteCache()
-const layoutTab = useLayoutTab()
+const layoutStore = useLayoutStore()
 
 // 点击tab
 function clickTab (pane: TabsPaneContext) {
@@ -73,6 +73,7 @@ function changeCurTab () {
   const componentName = componentDef?.__name
   const tab = tabs.value.find(tab => tab.routeName === name)
   
+  if (path === '/_empty') return
   if (!name) {
     console.warn(`LayoutTabs组件：请给 ${path} 路由配置name`)
   }
@@ -84,7 +85,7 @@ function changeCurTab () {
     removeCache(componentName)
   }
   
-  // 如果同一tab路径变了（使用/detail/:id），则清除缓存实例
+  // 如果同一tab路径变了（例如路径为 /detail/:id），则清除缓存实例
   if (tab && tab.path !== path) {
     removeCacheEntry(componentName || '')
   }
@@ -116,31 +117,34 @@ async function removeTab (name: string) {
   // 切换到最后一个tab
   if (tab.routeName === currTab.value) {
     const lastTab = tabs.value[tabs.value.length - 1]
-    await gotoTab(lastTab)
+    lastTab && gotoTab(lastTab)
   }
-  removeCacheEntry(tab.componentName || '')
+  removeCache(tab.componentName || '')
 }
 
 // 关闭当前tab
-async function closeLayoutTab (options: {
-  name?: string,
-  rediect?: RouteLocationRaw,
-  isReplace?: boolean
-}) {
-  if (!options.name) options.name = currTab.value
-  if (!options.rediect) options.rediect = '/'
-  if (!options.isReplace) options.isReplace = true
-  
-  const action = options.isReplace ? 'replace' : 'push'
-  const index = tabs.value.findIndex(tab => tab.routeName === options.name)
+async function closeLayoutTab (routeName: string = currTab.value) {
+  const index = tabs.value.findIndex(tab => tab.routeName === routeName)
   if (index === -1) return 
   
-  const tab = tabs.value[index]
   tabs.value.splice(index, 1)
-  await router[action](options.rediect)
-  removeCacheEntry(tab.componentName || '')
 }
-layoutTab.registerCloseTab(closeLayoutTab)
+layoutStore.registerCloseTab(closeLayoutTab)
+
+// 刷新tab页面
+async function refreshTab () {
+  const tab = tabs.value.find(tab => tab.routeName === currTab.value)
+  if (tab) {
+    await router.push('/_empty')
+    removeCacheEntry(tab.componentName || '')
+    router.go(-1)
+    
+    // TODO:通过layoutStore.isRenderTab 来刷新tab页面会报错，该方案不行
+    // layoutStore.setIsRenderTab(false)
+    // await removeCacheEntry(tab.componentName || '')
+    // layoutStore.setIsRenderTab(true)
+  }
+}
 
 watch(() => route.path, changeCurTab, {
   immediate: true

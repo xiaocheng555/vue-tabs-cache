@@ -17,13 +17,16 @@
       <el-header style="text-align: right; font-size: 12px">
         <layout-tabs></layout-tabs>
       </el-header>
-
+      
+      <p style="color: #999; padding: 0 20px 5px;">缓存组件：{{caches}}</p>
       <el-main id="app-main-scroller">
         <div style="padding: 20px;">
           <router-view v-slot="{ Component }">
             <keep-alive :include="caches">
               <component :is="Component" />
             </keep-alive>
+              <!-- 报错了 -->
+              <!-- <component :is="Component" v-if="layoutStore.isRenderTab" /> -->
           </router-view>
         </div>
       </el-main>
@@ -35,8 +38,10 @@
 import { ref } from 'vue'
 import LayoutTabs from './LayoutTabs.vue'
 import useRouteCache from '@/hooks/useRouteCache'
+import useLayoutStore from '@/store/layout'
 
 const { caches } = useRouteCache()
+const layoutStore = useLayoutStore()
 const menus = ref([
   {
     link: '/',
@@ -55,6 +60,9 @@ const menus = ref([
 </script>
 
 <style scoped>
+:deep(.el-menu-item.is-active) {
+  color: #303133;
+}
 .layout-container-demo .el-header {
   position: relative;
 }

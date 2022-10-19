@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table v-loading="loading" :data="tableData" border>
+    <el-table :class="!isVisible ? 'hide' : ''" v-loading="loading" :data="tableData" border>
       <el-table-column min-width="60" prop="id" label="id" />
       <el-table-column min-width="120" prop="userName" label="用户名" />
       <el-table-column min-width="160" prop="address" label="地址" />
@@ -36,7 +36,8 @@ export default {
       currentPage: 1, 
       pageSize: 15, 
       loading: false,
-      list: []
+      list: [],
+      isVisible: true
     }
   },
   computed: {
@@ -61,9 +62,18 @@ export default {
   },
   created () {
     this.getData()
+  },
+  async activated () {
+    this.isVisible = false 
+    setTimeout(() => {
+      this.isVisible = true 
+    }, 20)
   }
 }
 </script>
 
 <style lang='less' scoped>
+.hide {
+  visibility: hidden;
+}
 </style>

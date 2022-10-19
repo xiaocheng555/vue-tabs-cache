@@ -24,7 +24,7 @@ import EventBus from '@/utils/event-bus'
 const KeepAliveRouteViewDepth = 2 // 【根据项目修改】keep-alive 缓存哪层router-view组件（第二层）
 
 export default {
-  name: '',
+  name: 'LayoutTabs',
   components: {},
   data () {
     return {
@@ -78,7 +78,7 @@ export default {
         this.removeCache(componentName)
       }
       
-      // 如果同一tab路径变了（使用/detail/:id），则清除缓存实例
+      // 如果同一tab路径变了（例如路径为 /detail/:id），则清除缓存实例
       if (tab && tab.path !== path) {
         this.removeCacheEntry(componentName || '')
       }
@@ -110,32 +110,26 @@ export default {
       // 切换到最后一个tab
       if (tab.routeName === this.currTab) {
         const lastTab = this.tabs[this.tabs.length - 1]
-        await this.gotoTab(lastTab)
+        this.gotoTab(lastTab)
       }
-      this.removeCacheEntry(tab.componentName || '')
+      this.removeCache(tab.componentName || '')
     },
 
-    // 关闭当前tab并跳转
-    async closeLayoutTab (options) {
-      if (!options.name) options.name = this.currTab
-      if (!options.rediect) options.rediect = '/'
-      if (!options.isReplace) options.isReplace = true
-      
-      const action = options.isReplace ? 'replace' : 'push'
-      const index = this.tabs.findIndex(tab => tab.routeName === options.name)
+    // 关闭tab页面，默认关闭当前页
+    async closeLayoutTab (routeName = this.currTab) {
+      const index = this.tabs.findIndex(tab => tab.routeName === routeName)
       if (index === -1) return 
       
-      const tab = this.tabs[index]
       this.tabs.splice(index, 1)
-      await this.$router[action](options.rediect)
-      this.removeCacheEntry(tab.componentName || '')
     },
     // 刷新当前tab页面
     async refreshTab () {
       const tab = this.tabs.find(tab => tab.routeName === this.currTab)
-      this.setIsRenderTab(false)
-      await this.removeCacheEntry(tab.componentName)
-      this.setIsRenderTab(true)
+      if (tab) {
+        this.setIsRenderTab(false)
+        await this.removeCacheEntry(tab.componentName)
+        this.setIsRenderTab(true)
+      }
     }
   },
   watch: {

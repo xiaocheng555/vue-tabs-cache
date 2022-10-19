@@ -43,11 +43,10 @@ export default {
       articleData.splice(index, 1)
       this.$message.success('文章已删除')
       
-      // 清除文章列表页的keep-alive缓存实例
-      await this.removeCacheEntry('ArticleList')
-      EventBus.$emit('LayoutTabs:closeTab', {
-        rediect: '/article'
-      })
+      EventBus.$emit('LayoutTabs:closeTab') // 关闭当前tab页
+      await this.removeCacheEntry('ArticleList') // 刷新列表-清除列表页缓存
+      await this.$router.replace('/article') // 跳转列表页
+      await this.removeCacheEntry('ArticleDetail') // 清除详情页页缓存（必须跳转到列表页才能清除详情页缓存，因为详情页正在使用的时候缓存是不能清除的）
     }
   },
   created () {

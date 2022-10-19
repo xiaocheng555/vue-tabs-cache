@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('./views/Home.vue'),
         name: 'home',
         meta: {
-          keepAlive: true,
+          // keepAlive: true,
           title: '首页'
         }
       },
@@ -42,6 +42,12 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
           title: '记录滚动位置'
         }
+      },
+      {
+        // 空白页，刷新tab页时用来做中转
+        path: '/_empty',
+        name: '_empty',
+        component: () => import('./views/Empty.vue')
       }
     ]
   }
