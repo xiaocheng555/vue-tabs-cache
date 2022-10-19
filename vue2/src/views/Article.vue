@@ -14,7 +14,7 @@ import EventBus from '@/utils/event-bus'
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'ArticleDetail',
+  name: 'Article',
   keepScroll: true,
   props: {
     id: {
@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     ...mapActions('cache', [
-      'removeCacheEntry'
+      'removeCache'
     ]),
     getArticle () {
       this.loading = true
@@ -44,9 +44,9 @@ export default {
       this.$message.success('文章已删除')
       
       EventBus.$emit('LayoutTabs:closeTab') // 关闭当前tab页
-      await this.removeCacheEntry('ArticleList') // 刷新列表-清除列表页缓存
-      await this.$router.replace('/article') // 跳转列表页
-      await this.removeCacheEntry('ArticleDetail') // 清除详情页页缓存（必须跳转到列表页才能清除详情页缓存，因为详情页正在使用的时候缓存是不能清除的）
+      this.removeCache('ArticleList') // 清除列表页缓存
+      this.removeCache('Article') // 清除详情页页缓存
+      this.$router.replace('/article') // 跳转列表页
     }
   },
   created () {

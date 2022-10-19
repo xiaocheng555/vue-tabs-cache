@@ -28,7 +28,7 @@ const loading = ref(false)
 const article = ref<IArticle | null | undefined>(null)
 const router = useRouter()
 const route = useRoute()
-const { removeCacheEntry } = useRouteCache()
+const { removeCache } = useRouteCache()
 const layoutStore = useLayoutStore()
 useKeepScroll()
 
@@ -46,15 +46,15 @@ async function delArticle () {
   articleData.splice(index, 1)
   ElMessage.success('文章已删除')
   
-  layoutStore.closeTab()
-  await removeCacheEntry('ArticleList') // 刷新列表-清除列表页缓存
+  layoutStore.closeTab() // 关闭当前tab
+  removeCache('ArticleList') // 清除列表页缓存
+  removeCache('Article') // 清除详情页页缓存
   // 跳转列表页
   if (window.history.state?.back !== '/article') {
     await router.replace('/article') 
   } else {
     await router.go(-1)
   }
-  await removeCacheEntry('ArticleDetail') // 清除详情页页缓存（必须跳转到列表页才能清除详情页缓存，因为详情页正在使用的时候缓存是不能清除的）
 }
 
 onMounted(() => {
