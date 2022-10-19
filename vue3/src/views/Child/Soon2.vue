@@ -18,7 +18,7 @@
           <el-table-column prop="day" label="练习时长（天）" />
           <el-table-column label="操作">
             <template v-slot="{ row }">
-              <el-link type="danger" @click="delUserData(row)">删除</el-link>
+              <el-link type="danger" @click="delUserData(row)">删除并刷新tab1</el-link>
             </template>
           </el-table-column>
         </el-table>

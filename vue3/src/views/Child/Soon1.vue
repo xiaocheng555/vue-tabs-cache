@@ -18,7 +18,7 @@
           <el-table-column prop="userName" label="用户名" />
           <el-table-column label="操作">
             <template v-slot="{ row }">
-              <el-link type="danger" @click="delUserData(row)">删除</el-link>
+              <el-link type="danger" @click="delUserData(row)">删除并刷新tab2</el-link>
             </template>
           </el-table-column>
         </el-table>

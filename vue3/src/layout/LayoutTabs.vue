@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout-tabs">
     <el-tabs
       type="border-card"
       v-model="curTabKey"
@@ -16,6 +16,7 @@
         </template>
       </el-tab-pane>
     </el-tabs>
+    <div class="close-tabs" @click="closeOtherTabs">关闭其他</div>
   </div>
 </template>
 
@@ -166,6 +167,16 @@ async function refreshTab () {
   }
 }
 
+// 关闭非当前页的所有tab页签
+function closeOtherTabs () {
+  tabs.value
+    .filter(tab => tab.tabKey !== curTabKey.value)
+    .forEach(tab => {
+      removeCache(tab.componentName || '')
+    })
+  tabs.value = tabs.value.filter(tab => tab.tabKey === curTabKey.value)
+}
+
 watch(() => route.path, changeCurTab, {
   immediate: true
 })
@@ -174,5 +185,16 @@ watch(() => route.path, changeCurTab, {
 <style lang='less' scoped>
 :deep(.el-tabs__content) {
   display: none;
+}
+.layout-tabs {
+  position: relative;
+}
+.close-tabs {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 12px;
+  cursor: pointer;
+  color: #999;
 }
 </style>
