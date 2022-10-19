@@ -8,8 +8,12 @@ export default new Vuex.Store({
   modules: {
     'cache': cacheModule
   },
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {}
+  state: {
+    isRenderTab: true
+  },
+  mutations: {
+    setIsRenderTab (state, data) {
+      state.isRenderTab = data
+    }
+  }
 })

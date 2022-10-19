@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :key="refreshKey" v-loading="loading" :data="tableData" border>
+    <el-table v-loading="loading" :data="tableData" border>
       <el-table-column min-width="60" prop="id" label="id" />
       <el-table-column min-width="120" prop="userName" label="用户名" />
       <el-table-column min-width="160" prop="address" label="地址" />
@@ -36,8 +36,7 @@ export default {
       currentPage: 1, 
       pageSize: 15, 
       loading: false,
-      list: [],
-      refreshKey: 0
+      list: []
     }
   },
   computed: {
@@ -62,12 +61,6 @@ export default {
   },
   created () {
     this.getData()
-  },
-  activated () {
-    this.refreshKey++
-    this.$nextTick(() => {
-      this.restoreKeepScrollPos?.()
-    })
   }
 }
 </script>

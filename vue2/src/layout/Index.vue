@@ -18,11 +18,12 @@
       <el-header style="text-align: right; font-size: 12px">
         <layout-tabs></layout-tabs>
       </el-header>
-
+        
+      <p style="color: #999; padding: 0 20px 5px;">缓存组件：{{caches}}</p>
       <el-main id="app-main-scroller">
         <div style="padding: 20px;">
           <keep-alive :include="caches">
-            <router-view></router-view>
+            <router-view v-if="isRenderTab"></router-view>
           </keep-alive>
         </div>
       </el-main>
@@ -57,7 +58,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('cache', ['caches'])
+    ...mapState('cache', ['caches']),
+    ...mapState(['isRenderTab'])
   }
 }
 </script>

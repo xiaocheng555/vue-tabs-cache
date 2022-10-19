@@ -14,7 +14,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      loading: false,
+      loading: true,
       time: new Date().toLocaleString()
     }
   },

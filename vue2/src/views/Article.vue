@@ -15,6 +15,7 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'ArticleDetail',
+  keepScroll: true,
   props: {
     id: {
       type: String

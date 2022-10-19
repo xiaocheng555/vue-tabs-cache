@@ -11,6 +11,7 @@
         :label="item.title"
         :name="item.routeName"
         :key="item.routeName">
+        <template slot="label">{{item.title}} <i v-if="currTab === item.routeName" class="el-icon-refresh" @click="refreshTab"></i></template>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -32,12 +33,13 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('cache', [
-      'addCache', 
-      'removeCache'
-    ]),
     ...mapActions('cache', [
+      'addCache', 
+      'removeCache',
       'removeCacheEntry'
+    ]),
+    ...mapMutations([
+      'setIsRenderTab'
     ]),
     // 点击tab
     clickTab (pane) {
@@ -127,6 +129,13 @@ export default {
       this.tabs.splice(index, 1)
       await this.$router[action](options.rediect)
       this.removeCacheEntry(tab.componentName || '')
+    },
+    // 刷新当前tab页面
+    async refreshTab () {
+      const tab = this.tabs.find(tab => tab.routeName === this.currTab)
+      this.setIsRenderTab(false)
+      await this.removeCacheEntry(tab.componentName)
+      this.setIsRenderTab(true)
     }
   },
   watch: {

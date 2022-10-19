@@ -5,9 +5,10 @@ export default {
   state: {
     caches: []
   },
-  mutations: {
+  actions: {
     // 添加缓存的路由组件
-    addCache ({ caches }, componentName) {
+    addCache ({ state }, componentName) {
+      const { caches } = state
       if (!componentName || caches.includes(componentName)) return
 
       caches.push(componentName)
@@ -15,33 +16,27 @@ export default {
     },
 
     // 移除缓存的路由组件
-    removeCache ({ caches }, componentName) {
+    removeCache ({ state }, componentName) {
+      const { caches } = state
       const index = caches.indexOf(componentName)
       if (index > -1) {
         console.log('清除缓存的路由组件：', componentName)
-        return caches.splice(index, 1)
+        return caches.splice(index, 1)[0]
       }
     },
-
-    // 清除缓存的路由组件的实例
-    // clearEntry({ caches }) {
-    //   caches.slice().forEach(key => {
-    //     removeCacheEntry(key)
-    //   })
-    // }
-  },
-  actions: {
     // 移除缓存的路由组件的实例
-    removeCacheEntry (context, componentName) {
-      return new Promise((resolve) => {
-        if (context.commit('removeCache', componentName)) {
-          Vue.$nextTick(() => {
-            context.commit('addCache', componentName)
-            resolve()
-          })
-        } else {
-          resolve()
-        }
+    async removeCacheEntry ({ dispatch }, componentName) {
+      const cacheRemoved = await dispatch('removeCache', componentName)
+      if (cacheRemoved) {
+        await Vue.nextTick()
+        dispatch('addCache', componentName)
+      }
+    },
+    // 清除缓存的路由组件的实例
+    clearEntry ({ state, dispatch }) {
+      const { caches } = state
+      caches.slice().forEach(key => {
+        dispatch('removeCacheEntry', key)
       })
     }
   }
