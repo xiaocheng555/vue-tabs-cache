@@ -1,19 +1,20 @@
 <template>
-  <div>
+  <div class="layout-tabs">
     <el-tabs
       type="border-card"
-      v-model="currTab"
+      v-model="curTabKey"
       closable
       @tab-click="clickTab"
       @tab-remove="removeTab">
       <el-tab-pane
         v-for="item in tabs"
         :label="item.title"
-        :name="item.routeName"
-        :key="item.routeName">
-        <template slot="label">{{item.title}} <i v-if="currTab === item.routeName" class="el-icon-refresh" @click="refreshTab"></i></template>
+        :name="item.tabKey"
+        :key="item.tabKey">
+        <template slot="label">{{item.title}} <i v-if="curTabKey === item.tabKey" class="el-icon-refresh" @click="refreshTab"></i></template>
       </el-tab-pane>
     </el-tabs>
+    <div class="close-tabs" @click="closeOtherTabs">关闭其他</div>
   </div>
 </template>
 
@@ -21,15 +22,32 @@
 import { mapMutations, mapActions } from 'vuex'
 import EventBus from '@/utils/event-bus'
 
-const KeepAliveRouteViewDepth = 2 // 【根据项目修改】keep-alive 缓存哪层router-view组件（第二层）
-
 export default {
   name: 'LayoutTabs',
-  components: {},
+  props: {
+    // 【根据项目修改】tab页面在路由的第几层，或者说第几层的 router-view 组件（当前项目为第二层）
+    tabRouteViewDepth: {
+      type: Number,
+      default: 2 
+    },
+    // tab页面的key值，从route对象中取，一个key值对应一个tab页面
+    // 默认为route.name值（不要设为route.path，因为route.path为'/detail/:id'时会造成一个路由对应多个tab页），可以自己设置 route.meta.tabKey
+    getTabKey: {
+      type: Function,
+      default: (route) => {
+        return route.name
+      }
+    },
+    // tab页签的标题，默认从路由meta.title中获取
+    tabTitleKey: {
+      type: String,
+      default: 'title'
+    }
+  },
   data () {
     return {
       tabs: [],
-      currTab: ''
+      curTabKey: ''
     }
   },
   methods: {
@@ -41,6 +59,41 @@ export default {
     ...mapMutations([
       'setIsRenderTab'
     ]),
+    // 切换tab
+    changeCurTab () {
+      // 当前路由信息
+      const { path, query, params, hash, matched } = this.$route
+      // tab标签页路由信息：meta、componentName
+      const routeMatch = matched[this.tabRouteViewDepth - 1]
+      const meta = routeMatch.meta
+      const componentName = routeMatch.components?.default?.name
+      // 获取tab标签页信息：tabKey标签页key值；title-标签页标题；tab-存在的标签页
+      const tabKey = this.getTabKey(routeMatch)
+      const title = String(meta[this.tabTitleKey] || '')
+      const tab = this.tabs.find(tab => tab.tabKey === tabKey)
+      
+      if (!tabKey) { // tabKey默认为路由的name值
+        console.warn(`LayoutTabs组件：${path} 路由没有匹配的tab标签页，如有需要请配置tab标签页的key值`)
+        return 
+      }
+      
+      // 如果同一tab路径变了（例如路径为 /detail/:id），则清除缓存实例
+      if (tab && tab.path !== path) {
+        this.removeCacheEntry(componentName || '')
+      }
+      
+      const newTab = {
+        tabKey,
+        title,
+        path,
+        params,
+        query,
+        hash,
+        componentName 
+      }
+      tab ? Object.assign(tab, newTab) : this.tabs.push(newTab)
+      this.curTabKey = tabKey
+    },
     // 点击tab
     clickTab (pane) {
       if (!pane.index) return
@@ -50,7 +103,24 @@ export default {
         this.gotoTab(tab)
       }
     },
-
+    // 移除tab
+    async removeTab (name) {
+      // 剩下一个时不能删
+      if (this.tabs.length === 1) return
+      
+      const index = this.tabs.findIndex(tab => tab.tabKey === name)
+      if (index < -1) return 
+      
+      const tab = this.tabs[index]
+      this.tabs.splice(index, 1)
+      
+      // 如果删除的是当前tab，则切换到最后一个tab
+      if (tab.tabKey === this.curTabKey) {
+        const lastTab = this.tabs[this.tabs.length - 1]
+        lastTab && this.gotoTab(lastTab)
+      }
+      this.removeCache(tab.componentName || '')
+    },
     // 跳转tab页面
     async gotoTab (tab) {
       await this.$router.push({
@@ -59,77 +129,28 @@ export default {
         hash: tab.hash
       })
     },
-
-    // 切换tab
-    changeCurTab () {
-      const { name, path, meta, query, params, hash, matched } = this.$route
-      const routeMatch = matched[KeepAliveRouteViewDepth - 1]
-      const componentName = routeMatch.components?.default?.name
-      const tab = this.tabs.find(tab => tab.routeName === name)
-      
-      if (!name) {
-        console.warn(`LayoutTabs组件：请给 ${path} 路由配置name`)
-      }
-      
-      // 配置了meta.keepAlive的路由组件添加到缓存
-      if (meta.keepAlive) {
-        this.addCache(componentName)
-      } else {
-        this.removeCache(componentName)
-      }
-      
-      // 如果同一tab路径变了（例如路径为 /detail/:id），则清除缓存实例
-      if (tab && tab.path !== path) {
-        this.removeCacheEntry(componentName || '')
-      }
-      
-      const newTab = {
-        title: String(meta?.title || ''),
-        routeName: name?.toString(),
-        path: path,
-        params,
-        query,
-        hash,
-        componentName 
-      }
-      tab ? Object.assign(tab, newTab) : this.tabs.push(newTab)
-      this.currTab = String(name) || ''
-    },
-
-    // 移除tab
-    async removeTab (name) {
-      // 剩下一个时不能删
-      if (this.tabs.length === 1) return
-      
-      const index = this.tabs.findIndex(tab => tab.routeName === name)
-      if (index < -1) return 
-      
-      const tab = this.tabs[index]
-      this.tabs.splice(index, 1)
-      
-      // 如果删除的是当前tab，则切换到最后一个tab
-      if (tab.routeName === this.currTab) {
-        const lastTab = this.tabs[this.tabs.length - 1]
-        this.gotoTab(lastTab)
-      }
-      this.removeCache(tab.componentName || '')
-    },
-
     // 关闭tab页面，默认关闭当前页
-    async closeLayoutTab (routeName = this.currTab) {
-      const index = this.tabs.findIndex(tab => tab.routeName === routeName)
-      if (index === -1) return 
-      
-      this.tabs.splice(index, 1)
+    async closeLayoutTab (tabKey = this.curTabKey) {
+      const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
+      if (index === -1) this.tabs.splice(index, 1) 
     },
     // 刷新当前tab页面
     async refreshTab () {
-      const tab = this.tabs.find(tab => tab.routeName === this.currTab)
+      const tab = this.tabs.find(tab => tab.tabKey === this.curTabKey)
       if (tab) {
         this.setIsRenderTab(false)
         await this.removeCacheEntry(tab.componentName)
         this.setIsRenderTab(true)
       }
+    },
+    // 关闭非当前页的所有tab页签
+    closeOtherTabs () {
+      this.tabs
+        .filter(tab => tab.tabKey !== this.curTabKey)
+        .forEach(tab => {
+          this.removeCache(tab.componentName || '')
+        })
+      this.tabs = this.tabs.filter(tab => tab.tabKey === this.curTabKey)
     }
   },
   watch: {
@@ -151,5 +172,16 @@ export default {
 <style lang='less' scoped>
 :deep(.el-tabs__content) {
   display: none;
+}
+.layout-tabs {
+  position: relative;
+}
+.close-tabs {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 12px;
+  cursor: pointer;
+  color: #999;
 }
 </style>

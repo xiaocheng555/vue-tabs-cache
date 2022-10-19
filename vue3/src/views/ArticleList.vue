@@ -2,7 +2,11 @@
   <div>
     <el-table v-loading="loading" :data="tableData" border>
       <el-table-column prop="id" label="id" />
-      <el-table-column prop="userName" label="用户名" />
+      <el-table-column prop="userName" label="用户名">
+        <template v-slot="{ row }">
+          <el-link type="primary" @click="gotoDetail(row)">{{row.userName}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column prop="address" label="地址" />
       <el-table-column prop="content" label="内容">
         <template v-slot="{ row }">

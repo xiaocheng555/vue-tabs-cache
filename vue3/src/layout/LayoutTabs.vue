@@ -129,7 +129,6 @@ async function removeTab (name: string) {
     const lastTab = tabs.value[tabs.value.length - 1]
     lastTab && gotoTab(lastTab)
   }
-  console.log(tab, 'del tab')
   // 同时移除tab缓存
   removeCache(tab.componentName || '')
 }

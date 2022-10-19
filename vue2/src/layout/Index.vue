@@ -51,6 +51,10 @@ export default {
           title: '文章列表'
         },
         {
+          link: '/child',
+          title: '多级缓存'
+        },
+        {
           link: '/KeepScroll',
           title: '记录滚动位置'
         }
