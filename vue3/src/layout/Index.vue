@@ -25,7 +25,7 @@
             <keep-alive :include="caches">
               <component :is="Component" />
             </keep-alive>
-              <!-- 报错了 -->
+              <!-- 通过isRenderTab刷新tab页方案，Vue3会报错了 -->
               <!-- <component :is="Component" v-if="layoutStore.isRenderTab" /> -->
           </router-view>
         </div>
@@ -52,10 +52,13 @@ const menus = ref([
     title: '文章列表'
   },
   {
+    link: '/child',
+    title: '多级缓存'
+  },
+  {
     link: '/KeepScroll',
     title: '记录滚动位置'
   }
-  
 ])
 </script>
 

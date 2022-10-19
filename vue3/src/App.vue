@@ -5,11 +5,16 @@
 </template>
 
 <script setup lang="ts">
+import useRouteCache from '@/hooks/useRouteCache'
+
+// 收集路由配置meta为keepAlive: ture的缓存
+const { collectCaches } = useRouteCache()
+collectCaches()
 </script>
 
-<style>
+<style lang="less">
 * {
   margin: 0;
-  padding:
+  padding: 0;
 }
 </style>

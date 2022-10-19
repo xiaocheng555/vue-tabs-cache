@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/article/:id',
-        component: () => import('./views/Article.vue'),
+        component: () => import('./views/ArticleDetail.vue'),
         name: 'article-detail',
         props: true,
         meta: {
@@ -43,6 +43,37 @@ const routes: RouteRecordRaw[] = [
           keepAlive: true,
           title: '记录滚动位置'
         }
+      },
+      {
+        // 多级缓存
+        path: '/child',
+        name: 'child',
+        component: () => import('./views/Child/Index.vue'),
+        meta: {
+          title: '多级缓存',
+          keepAlive: true,
+        },
+        redirect: {
+          path: '/soon1'
+        },
+        children: [
+          {
+            path: '/soon1',
+            name: 'soon1',
+            component: () => import('./views/Child/Soon1.vue'),
+            meta: {
+              keepAlive: true
+            }
+          },
+          {
+            path: '/soon2',
+            name: 'soon2',
+            component: () => import('./views/Child/Soon2.vue'),
+            meta: {
+              keepAlive: true
+            }
+          }
+        ]
       },
       {
         // 空白页，刷新tab页时用来做中转

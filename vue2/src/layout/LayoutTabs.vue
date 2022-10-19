@@ -107,7 +107,7 @@ export default {
       const tab = this.tabs[index]
       this.tabs.splice(index, 1)
       
-      // 切换到最后一个tab
+      // 如果删除的是当前tab，则切换到最后一个tab
       if (tab.routeName === this.currTab) {
         const lastTab = this.tabs[this.tabs.length - 1]
         this.gotoTab(lastTab)

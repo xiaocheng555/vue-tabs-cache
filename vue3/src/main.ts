@@ -12,6 +12,8 @@ app.use(createPinia())
 app.use(ElementPlus)
 app.use(Router)
 app.mount('#app')
+
+// 配置记录滚动位置的滚动容器
 configKeepScroll('#app-main-scroller')
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

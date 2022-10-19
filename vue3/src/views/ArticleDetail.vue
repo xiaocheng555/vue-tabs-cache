@@ -10,9 +10,9 @@
 
 <script setup lang="ts">
 import { defineProps, ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import type { IArticle } from './data.d'
+import type { IArticle } from './data'
 import articleData from '@/mock/article.json'
 import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
@@ -27,13 +27,11 @@ const props = defineProps({
 const loading = ref(false)
 const article = ref<IArticle | null | undefined>(null)
 const router = useRouter()
-const route = useRoute()
 const { removeCache } = useRouteCache()
 const layoutStore = useLayoutStore()
 useKeepScroll()
 
 function getArticle () {
-  console.log(route, 'route')
   loading.value = true
   setTimeout(() => {
     article.value = articleData.find(item => item.id === Number(props.id))
