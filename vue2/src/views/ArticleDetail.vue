@@ -1,10 +1,15 @@
 <template>
   <div class="article-detail" v-loading="loading">
-    <el-button type="danger" @click="delArticle">删除文章</el-button>
-    <p>{{article.userName}}</p>
-    <p>{{article.time}}</p>
-    <p>{{article.address}}</p>
-    <p>{{article.content}}</p>
+    <div v-if="!article">
+      文章不存在！
+    </div>
+    <div v-else>
+      <el-button type="danger" @click="delArticle">删除文章</el-button>
+      <p>{{article.userName}}</p>
+      <p>{{article.time}}</p>
+      <p>{{article.address}}</p>
+      <p>{{article.content}}</p>
+    </div>
   </div>
 </template>
 
@@ -14,7 +19,7 @@ import EventBus from '@/utils/event-bus'
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'Article',
+  name: 'ArticleDetail',
   keepScroll: true,
   props: {
     id: {
@@ -35,6 +40,9 @@ export default {
       this.loading = true
       setTimeout(() => {
         this.article = articleData.find(item => item.id === Number(this.id))
+        if (this.article) {
+          EventBus.$emit('LayoutTabs:setTabTitle', `文章详情-${this.article.userName}`) // 设置tab标题
+        }
         this.loading = false
       }, 1000)
     },
@@ -44,8 +52,7 @@ export default {
       this.$message.success('文章已删除')
       
       EventBus.$emit('LayoutTabs:closeTab') // 关闭当前tab页
-      this.removeCache('ArticleList') // 清除列表页缓存
-      this.removeCache('Article') // 清除详情页页缓存
+      this.removeCache(['ArticleList', 'ArticleDetail']) // 清除列表页、详情页缓存
       this.$router.replace('/article') // 跳转列表页
     }
   },

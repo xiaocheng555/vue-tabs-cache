@@ -39,6 +39,14 @@ export default {
         this.$router.push(pane.paneName)
       }
     }
+  },
+  watch: {
+    '$route.path': {
+      immediate: true,
+      handler (val) {
+        this.curTabName = val
+      }
+    }
   }
 }
 </script>

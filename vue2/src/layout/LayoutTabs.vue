@@ -80,11 +80,12 @@ export default {
       // 如果同一tab路径变了（例如路径为 /detail/:id），则清除缓存实例
       if (tab && tab.path !== path) {
         this.removeCacheEntry(componentName || '')
+        tab.title = ''
       }
       
       const newTab = {
         tabKey,
-        title,
+        title: tab?.title || title,
         path,
         params,
         query,
@@ -104,11 +105,11 @@ export default {
       }
     },
     // 移除tab
-    async removeTab (name) {
+    async removeTab (tabKey) {
       // 剩下一个时不能删
       if (this.tabs.length === 1) return
       
-      const index = this.tabs.findIndex(tab => tab.tabKey === name)
+      const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
       if (index < -1) return 
       
       const tab = this.tabs[index]
@@ -129,10 +130,14 @@ export default {
         hash: tab.hash
       })
     },
-    // 关闭tab页面，默认关闭当前页
-    async closeLayoutTab (tabKey = this.curTabKey) {
-      const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
-      if (index === -1) this.tabs.splice(index, 1) 
+    // 关闭非当前页的所有tab页签
+    closeOtherTabs () {
+      this.tabs
+        .filter(tab => tab.tabKey !== this.curTabKey)
+        .forEach(tab => {
+          this.removeCache(tab.componentName || '')
+        })
+      this.tabs = this.tabs.filter(tab => tab.tabKey === this.curTabKey)
     },
     // 刷新当前tab页面
     async refreshTab () {
@@ -143,14 +148,17 @@ export default {
         this.setIsRenderTab(true)
       }
     },
-    // 关闭非当前页的所有tab页签
-    closeOtherTabs () {
-      this.tabs
-        .filter(tab => tab.tabKey !== this.curTabKey)
-        .forEach(tab => {
-          this.removeCache(tab.componentName || '')
-        })
-      this.tabs = this.tabs.filter(tab => tab.tabKey === this.curTabKey)
+    // 关闭tab页面，默认关闭当前页
+    async closeLayoutTab (tabKey = this.curTabKey) {
+      const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
+      if (index > -1) this.tabs.splice(index, 1) 
+    },
+    // 设置当前tab的标题
+    setCurTabTitle (title) {
+      const curTab = this.tabs.find(tab => tab.tabKey === this.curTabKey)
+      if (curTab) {
+        curTab.title = title
+      }
     }
   },
   watch: {
@@ -162,8 +170,12 @@ export default {
     }
   },
   created () {
-    EventBus.$on('LayoutTabs:closeTab', (data) => {
-      this.closeLayoutTab(data)
+    // 对外提供的事件：关闭弹窗；设置tab标题
+    EventBus.$on('LayoutTabs:closeTab', (tabKey) => {
+      this.closeLayoutTab(tabKey)
+    })
+    EventBus.$on('LayoutTabs:setTabTitle', (title) => {
+      this.setCurTabTitle(title)
     })
   }
 }

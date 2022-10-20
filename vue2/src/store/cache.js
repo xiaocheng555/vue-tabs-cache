@@ -7,7 +7,14 @@ export default {
   },
   actions: {
     // 添加缓存的路由组件
-    addCache ({ state }, componentName) {
+    addCache ({ state, dispatch }, componentName) {
+      if (Array.isArray(componentName)) {
+        componentName.forEach((item) => {
+          dispatch('addCache', item)
+        })
+        return
+      }
+      
       const { caches } = state
       if (!componentName || caches.includes(componentName)) return
 
@@ -16,7 +23,14 @@ export default {
     },
 
     // 移除缓存的路由组件
-    removeCache ({ state }, componentName) {
+    removeCache ({ state, dispatch }, componentName) {
+      if (Array.isArray(componentName)) {
+        componentName.forEach((item) => {
+          dispatch('removeCache', item)
+        })
+        return
+      }
+      
       const { caches } = state
       const index = caches.indexOf(componentName)
       if (index > -1) {

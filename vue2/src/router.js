@@ -26,7 +26,7 @@ const routes = [
       },
       {
         path: '/article/:id',
-        component: () => import('./views/Article.vue'),
+        component: () => import('./views/ArticleDetail.vue'),
         name: 'article-detail',
         props: true,
         meta: {
