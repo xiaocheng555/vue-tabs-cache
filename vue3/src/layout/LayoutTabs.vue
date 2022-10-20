@@ -26,6 +26,7 @@ import { useRoute, useRouter, LocationQuery, RouteParams, RouteLocationNormalize
 import { TabsPaneContext } from 'element-plus'
 import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
+import EventBus from '@/utils/event-bus'
 
 const props = defineProps({
   // 【根据项目修改】tab页面在路由的第几层，或者说第几层的 router-view 组件（当前项目为第二层）
@@ -88,11 +89,12 @@ function changeCurTab () {
   // 同一个路由，但是新旧路径不同时，需要清除路由缓存。例如route.path配置为 '/detail/:id'时路径会不同
   if (tab && tab.path !== path) {
     removeCacheEntry(componentName || '')
+    tab.title = ''
   }
   
   const newTab = {
     tabKey,
-    title,
+    title: tab?.title || title,
     path,
     params,
     query,
@@ -142,14 +144,6 @@ async function gotoTab (tab: Tab) {
   })
 }
 
-// 默认关闭当前tab
-async function closeLayoutTab (tabKey: string = curTabKey.value) {
-  const index = tabs.value.findIndex(tab => tab.tabKey === tabKey)
-  if (index > -1) tabs.value.splice(index, 1)
-}
-// 存储closeLayoutTab函数，供其他页面调用
-layoutStore.registerCloseTab(closeLayoutTab)
-
 // 刷新tab页面
 async function refreshTab () {
   const tab = tabs.value.find(tab => tab.tabKey === curTabKey.value)
@@ -175,6 +169,27 @@ function closeOtherTabs () {
     })
   tabs.value = tabs.value.filter(tab => tab.tabKey === curTabKey.value)
 }
+
+// 默认关闭当前tab
+async function closeLayoutTab (tabKey: string = curTabKey.value) {
+  const index = tabs.value.findIndex(tab => tab.tabKey === tabKey)
+  if (index > -1) tabs.value.splice(index, 1)
+}
+
+function setCurTabTitle (title: string) {
+  const curTab = tabs.value.find(tab => tab.tabKey === curTabKey.value)
+  if (curTab) {
+    curTab.title = title
+  }
+}
+
+// 对外提供的事件：关闭弹窗；设置tab标题
+EventBus.on('LayoutTabs:closeTab', (tabKey) => {
+  closeLayoutTab(tabKey)
+})
+EventBus.on('LayoutTabs:setTabTitle', (title) => {
+  setCurTabTitle(title)
+})
 
 watch(() => route.path, changeCurTab, {
   immediate: true
