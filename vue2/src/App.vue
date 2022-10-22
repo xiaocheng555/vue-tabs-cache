@@ -40,9 +40,6 @@ export default {
         this.collectCaches()
       }
     }
-  },
-  created () {
-    this.collectCaches(this)
   }
 }
 </script>

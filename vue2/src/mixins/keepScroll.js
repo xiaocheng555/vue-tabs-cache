@@ -12,7 +12,7 @@ function getOptions ($options) {
 }
 
 // 配置设置
-export function configSetting (data) {
+export function configKeepScroll (data) {
   Object.assign(setting, data)
 }
 
