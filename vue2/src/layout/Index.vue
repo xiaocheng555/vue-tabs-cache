@@ -16,7 +16,7 @@
 
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
-        <layout-tabs :getTabKey="(routeMatch , route) => route.path"></layout-tabs>
+        <layout-tabs></layout-tabs>
       </el-header>
         
       <p style="color: #999; padding: 0 20px 5px;">缓存组件：{{caches}}</p>
