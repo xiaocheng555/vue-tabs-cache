@@ -11,7 +11,7 @@
         :label="item.title"
         :name="item.tabKey"
         :key="item.tabKey">
-        <template slot="label">{{item.title}} <i v-if="curTabKey === item.tabKey" class="el-icon-refresh" @click="refreshTab"></i></template>
+        <template slot="label">{{item.title}} <i v-if="curTabKey === item.tabKey" class="el-icon-refresh" @click="refreshTab(item)"></i></template>
       </el-tab-pane>
     </el-tabs>
     <div class="close-tabs" @click="closeOtherTabs">关闭其他</div>
@@ -31,11 +31,11 @@ export default {
       default: 2 
     },
     // tab页面的key值，从route对象中取，一个key值对应一个tab页面
-    // 默认为route.name值（不要设为route.path，因为route.path为'/detail/:id'时会造成一个路由对应多个tab页），可以自己设置 route.meta.tabKey
+    // 默认为matchRoute.path值
     getTabKey: {
       type: Function,
-      default: (route) => {
-        return route.name
+      default: function (routeMatch/* , route */) {
+        return routeMatch.path
       }
     },
     // tab页签的标题，默认从路由meta.title中获取
@@ -68,7 +68,7 @@ export default {
       const meta = routeMatch.meta
       const componentName = routeMatch.components?.default?.name
       // 获取tab标签页信息：tabKey标签页key值；title-标签页标题；tab-存在的标签页
-      const tabKey = this.getTabKey(routeMatch)
+      const tabKey = this.getTabKey(routeMatch, this.$route)
       const title = String(meta[this.tabTitleKey] || '')
       const tab = this.tabs.find(tab => tab.tabKey === tabKey)
       
@@ -140,18 +140,18 @@ export default {
       this.tabs = this.tabs.filter(tab => tab.tabKey === this.curTabKey)
     },
     // 刷新当前tab页面
-    async refreshTab () {
-      const tab = this.tabs.find(tab => tab.tabKey === this.curTabKey)
-      if (tab) {
-        this.setIsRenderTab(false)
-        await this.removeCacheEntry(tab.componentName)
-        this.setIsRenderTab(true)
-      }
+    async refreshTab (tab) {
+      this.setIsRenderTab(false)
+      await this.removeCacheEntry(tab.componentName)
+      this.setIsRenderTab(true)
     },
     // 关闭tab页面，默认关闭当前页
     async closeLayoutTab (tabKey = this.curTabKey) {
       const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
-      if (index > -1) this.tabs.splice(index, 1) 
+      if (index > -1) {
+        this.tabs.splice(index, 1) 
+        this.removeCache(this.tabs[index].componentName)
+      }
     },
     // 设置当前tab的标题
     setCurTabTitle (title) {

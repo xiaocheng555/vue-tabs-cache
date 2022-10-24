@@ -52,7 +52,7 @@ export default {
       this.$message.success('文章已删除')
       
       EventBus.$emit('LayoutTabs:closeTab') // 关闭当前tab页
-      this.removeCache(['ArticleList', 'ArticleDetail']) // 清除列表页、详情页缓存
+      this.removeCache('ArticleList') // 清除列表页缓存
       this.$router.replace('/article') // 跳转列表页
     }
   },

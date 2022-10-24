@@ -12,7 +12,7 @@
         :name="item.tabKey"
         :key="item.tabKey">
         <template #label>
-          {{item.title}} <el-icon v-if="item.tabKey === curTabKey" @click="refreshTab"><Refresh /></el-icon>
+          {{item.title}} <el-icon v-if="item.tabKey === curTabKey" @click="refreshTab(item)"><Refresh /></el-icon>
         </template>
       </el-tab-pane>
     </el-tabs>
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRoute, useRouter, LocationQuery, RouteParams, RouteLocationNormalizedLoaded } from 'vue-router'
+import { useRoute, useRouter, LocationQuery, RouteParams, RouteLocationNormalizedLoaded, RouteLocationMatched } from 'vue-router'
 import { TabsPaneContext } from 'element-plus'
 import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
@@ -38,8 +38,8 @@ const props = defineProps({
   // 默认为route.name值（不要设为route.path，因为route.path为'/detail/:id'时会造成一个路由对应多个tab页），可以自己设置 route.meta.tabKey
   getTabKey: {
     type: Function,
-    default: (route: RouteLocationNormalizedLoaded) => {
-      return route.name
+    default: (routeMatch: RouteLocationMatched, route: RouteLocationNormalizedLoaded) => {
+      return routeMatch.path
     }
   },
   // tab页签的标题，默认从路由meta.title中获取
@@ -76,7 +76,7 @@ function changeCurTab () {
   const componentDef: any = routeMatch.components?.default
   const componentName = componentDef?.name || componentDef?.__name
   // 获取tab标签页信息：tabKey标签页key值；title-标签页标题；tab-存在的标签页
-  const tabKey = props.getTabKey(routeMatch)
+  const tabKey = props.getTabKey(routeMatch, route)
   const title = String(meta[props.tabTitleKey] || '')
   const tab = tabs.value.find(tab => tab.tabKey === tabKey)
   
@@ -145,19 +145,16 @@ async function gotoTab (tab: Tab) {
 }
 
 // 刷新tab页面
-async function refreshTab () {
-  const tab = tabs.value.find(tab => tab.tabKey === curTabKey.value)
-  if (tab) {
-    // 先跳转到空白页面，然后清除tab页缓存，接着返回到tab页【最后useRouteCache的collectCaches 方法会重新收集缓存】
-    await router.push('/_empty')
-    removeCache(tab.componentName || '')
-    router.go(-1)
-    
-    // TODO: 通过layoutStore.isRenderTab 来刷新tab页面会报错，该方案不行（Vue3的bug，详见https://github.com/vuejs/core/issues/5590）
-    // layoutStore.setIsRenderTab(false)
-    // await removeCacheEntry(tab.componentName || '')
-    // layoutStore.setIsRenderTab(true)
-  }
+async function refreshTab (tab: Tab) {
+  // 先跳转到空白页面，然后清除tab页缓存，接着返回到tab页【最后useRouteCache的collectCaches 方法会重新收集缓存】
+  await router.push('/_empty')
+  removeCache(tab.componentName || '')
+  router.go(-1)
+  
+  // TODO: 通过layoutStore.isRenderTab 来刷新tab页面会报错，该方案不行（Vue3的bug，详见https://github.com/vuejs/core/issues/5590）
+  // layoutStore.setIsRenderTab(false)
+  // await removeCacheEntry(tab.componentName || '')
+  // layoutStore.setIsRenderTab(true)
 }
 
 // 关闭非当前页的所有tab页签
@@ -173,7 +170,10 @@ function closeOtherTabs () {
 // 默认关闭当前tab
 async function closeLayoutTab (tabKey: string = curTabKey.value) {
   const index = tabs.value.findIndex(tab => tab.tabKey === tabKey)
-  if (index > -1) tabs.value.splice(index, 1)
+  if (index > -1) {
+    tabs.value.splice(index, 1)
+    removeCache(tabs.value[index].componentName || '')
+  }
 }
 
 function setCurTabTitle (title: string) {

@@ -52,7 +52,7 @@ async function delArticle () {
   ElMessage.success('文章已删除')
   
   EventBus.emit('LayoutTabs:closeTab') // 关闭当前tab
-  removeCache(['ArticleList', 'ArticleDetail']) // 清除列表页、详情页缓存缓存
+  removeCache('ArticleList') // 清除列表页缓存
   // 跳转列表页
   if (window.history.state?.back === '/article') {
     await router.go(-1)

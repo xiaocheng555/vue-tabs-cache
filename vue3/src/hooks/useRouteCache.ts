@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 
 const caches = ref<string[]>([])
 let collect = false
+let cmpNames: { [index: string]: string } = {}
 
 export default function useRouteCache () {
   const route = useRoute()
@@ -12,6 +13,10 @@ export default function useRouteCache () {
     route.matched.forEach(routeMatch => {
       const componentDef: any = routeMatch.components?.default
       const componentName = componentDef?.name || componentDef?.__name
+      const file: string = componentDef.__file
+      
+      checkRouteComponentName(componentName, file)
+      
       // 配置了meta.keepAlive的路由组件添加到缓存
       if (routeMatch.meta.keepAlive) {
         if (!componentName) {
@@ -23,6 +28,17 @@ export default function useRouteCache () {
         removeCache(componentName)
       }
     })
+  }
+  
+  // 检测路由组件名称是否重复（组件重名会缓存到不该缓存的组件，而且不容易排查问题，所以开发环境时检测重名）
+  function  checkRouteComponentName (name: string, file: string) {
+    if (cmpNames[name]) {
+      if (cmpNames[name] !== file) {
+        console.warn(`${file} 与${cmpNames[name]} 组件名称重复： ${name}`)
+      }
+    } else {
+      cmpNames[name] = file
+    }
   }
   
   // 收集缓存（通过监听）
