@@ -6,10 +6,11 @@
 </template>
 
 <script setup lang="ts">
+import useKeepScroll from '@/hooks/useKeepScroll'
+
 defineOptions({
   name: 'ArticleDetail'
 })
-import useKeepScroll from '@/hooks/useKeepScroll'
 
 useKeepScroll()
 </script>

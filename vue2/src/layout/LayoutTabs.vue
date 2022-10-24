@@ -149,8 +149,8 @@ export default {
     async closeLayoutTab (tabKey = this.curTabKey) {
       const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
       if (index > -1) {
-        this.tabs.splice(index, 1) 
         this.removeCache(this.tabs[index].componentName)
+        this.tabs.splice(index, 1) 
       }
     },
     // 设置当前tab的标题

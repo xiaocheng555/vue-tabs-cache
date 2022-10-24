@@ -171,8 +171,8 @@ function closeOtherTabs () {
 async function closeLayoutTab (tabKey: string = curTabKey.value) {
   const index = tabs.value.findIndex(tab => tab.tabKey === tabKey)
   if (index > -1) {
-    tabs.value.splice(index, 1)
     removeCache(tabs.value[index].componentName || '')
+    tabs.value.splice(index, 1)
   }
 }
 
