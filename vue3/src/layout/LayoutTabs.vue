@@ -89,6 +89,7 @@ function changeCurTab () {
   }
   
   // 同一个路由，但是新旧路径不同时，需要清除路由缓存。例如route.path配置为 '/detail/:id'时路径会不同
+  // 这里判断 props.tabRouteViewDepth === matched.length 必须是跟tab同级路由，否则会影响多级路由缓存
   if (tab && tab.path !== path && props.tabRouteViewDepth === matched.length) {
     removeCacheEntry(componentName || '')
     tab.title = ''
