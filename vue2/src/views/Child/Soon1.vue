@@ -5,7 +5,11 @@
         <el-table :data="cateList" border>
           <el-table-column label="用户名">
             <template v-slot="{ row }">
-              <a href="javascript:;" @click="curCate = row.name" style="display: block;">{{row.name}}</a>
+              <a 
+                href="javascript:;" 
+                :class="curCate === row.name ? 'active' : ''"
+                @click="curCate = row.name" 
+                style="display: block;">{{row.name}}</a>
             </template>
           </el-table-column>
         </el-table>
@@ -75,4 +79,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.active {
+  color: red;
+}
 </style>

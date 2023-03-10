@@ -77,8 +77,9 @@ export default {
         return 
       }
       
-      // 如果同一tab路径变了（例如路径为 /detail/:id），则清除缓存实例
-      if (tab && tab.path !== path) {
+      // 同一个路由，但是新旧路径不同时，需要清除路由缓存。例如route.path配置为 '/detail/:id'时路径会不同
+      // 这里判断 props.tabRouteViewDepth === matched.length 必须是跟tab同级路由，否则会影响多级路由缓存
+      if (tab && tab.path !== path && this.tabRouteViewDepth === matched.length) {
         this.removeCacheEntry(componentName || '')
         tab.title = ''
       }
