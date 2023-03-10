@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import useRouteCache from '@/hooks/useRouteCache'
 import { TabsPaneContext } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
@@ -42,6 +42,10 @@ function clickTab (pane: TabsPaneContext) {
     router.push(pane.paneName)
   }
 }
+
+watch(() => route.path, (val) => {
+  curTabName.value = val
+})
 </script>
 
 <style lang='less' scoped>

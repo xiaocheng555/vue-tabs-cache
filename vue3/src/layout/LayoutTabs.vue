@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRoute, useRouter, LocationQuery, RouteParams, RouteLocationNormalizedLoaded, RouteLocationMatched } from 'vue-router'
+import { useRoute, useRouter, matchedRouteKey, LocationQuery, RouteParams, RouteLocationNormalizedLoaded, RouteLocationMatched } from 'vue-router'
 import { TabsPaneContext } from 'element-plus'
 import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
@@ -70,8 +70,10 @@ const layoutStore = useLayoutStore()
 function changeCurTab () {
   // 当前路由信息
   const { path, query, params, hash, matched } = route
+  
   // tab标签页路由信息：meta、componentName
   const routeMatch = matched[props.tabRouteViewDepth - 1]
+  
   const meta = routeMatch.meta
   const componentDef: any = routeMatch.components?.default
   const componentName = componentDef?.name || componentDef?.__name
@@ -87,7 +89,7 @@ function changeCurTab () {
   }
   
   // 同一个路由，但是新旧路径不同时，需要清除路由缓存。例如route.path配置为 '/detail/:id'时路径会不同
-  if (tab && tab.path !== path) {
+  if (tab && tab.path !== path && props.tabRouteViewDepth === matched.length) {
     removeCacheEntry(componentName || '')
     tab.title = ''
   }
