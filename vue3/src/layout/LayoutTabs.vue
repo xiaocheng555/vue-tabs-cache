@@ -24,8 +24,9 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter, matchedRouteKey, LocationQuery, RouteParams, RouteLocationNormalizedLoaded, RouteLocationMatched } from 'vue-router'
 import { TabsPaneContext } from 'element-plus'
-import useRouteCache from '@/hooks/useRouteCache'
+// import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
+import { useRouteCache } from '@/components/router-view-cache'
 import EventBus from '@/utils/event-bus'
 
 const props = defineProps({
@@ -91,7 +92,7 @@ function changeCurTab () {
   // 同一个路由，但是新旧路径不同时，需要清除路由缓存。例如route.path配置为 '/detail/:id'时路径会不同
   // 这里判断 props.tabRouteViewDepth === matched.length 必须是跟tab同级路由，否则会影响多级路由缓存
   if (tab && tab.path !== path && props.tabRouteViewDepth === matched.length) {
-    removeCacheEntry(componentName || '')
+    removeCache(componentName || '')
     tab.title = ''
   }
   

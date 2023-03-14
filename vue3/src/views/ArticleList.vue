@@ -45,7 +45,7 @@ const tableData = computed(() => {
   const start = pageSize.value * (currentPage.value - 1)
   return list.value.slice(start, start + pageSize.value)
 })
-useKeepScroll()
+// useKeepScroll()
 
 function getData () {
   loading.value = true

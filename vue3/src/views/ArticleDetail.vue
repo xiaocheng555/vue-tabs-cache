@@ -33,7 +33,7 @@ const loading = ref(false)
 const article = ref<IArticle | null | undefined>(null)
 const router = useRouter()
 const { removeCache } = useRouteCache()
-useKeepScroll()
+// useKeepScroll()
 
 function getArticle () {
   loading.value = true

@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue'
 import  userData from '@/mock/user.json'
-import useRouteCache from '@/hooks/useRouteCache'
+import { useRouteCache } from '@/components/router-view-cache'
 
 defineOptions({
   name: 'Soon2'

@@ -12,5 +12,5 @@ defineOptions({
   name: 'ArticleDetail'
 })
 
-useKeepScroll()
+// useKeepScroll()
 </script>

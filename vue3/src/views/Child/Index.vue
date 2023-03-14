@@ -13,21 +13,16 @@
         name="/soon2">
       </el-tab-pane>
     </el-tabs>
-    <router-view v-slot="{ Component }">
-      <keep-alive :include="caches">
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
+    <router-view-cache></router-view-cache>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import useRouteCache from '@/hooks/useRouteCache'
 import { TabsPaneContext } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+import RouterViewCache from '@/components/router-view-cache'
 
-const { caches } = useRouteCache()
 const router = useRouter()
 const route = useRoute()
 const curTabName = ref(route.path)

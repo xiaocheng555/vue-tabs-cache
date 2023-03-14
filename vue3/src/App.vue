@@ -5,11 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import useRouteCache from '@/hooks/useRouteCache'
+// import useRouteCache from '@/hooks/useRouteCache'
+// import { useRouteCache } from '@/components/router-view-cache'
 
 // 收集路由配置meta为keepAlive: ture的缓存
-const { collectCaches } = useRouteCache()
-collectCaches()
+// const { collectCaches } = useRouteCache()
+// collectCaches()
 </script>
 
 <style lang="less">

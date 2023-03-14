@@ -21,13 +21,7 @@
       <p style="color: #999; padding: 0 20px 5px;">缓存组件：{{caches}}</p>
       <el-main id="app-main-scroller">
         <div style="padding: 20px;">
-          <router-view v-slot="{ Component }">
-            <keep-alive :include="caches">
-              <component :is="Component" />
-            </keep-alive>
-              <!-- 通过isRenderTab刷新tab页方案，Vue3会报错了 -->
-              <!-- <component :is="Component" v-if="layoutStore.isRenderTab" /> -->
-          </router-view>
+          <router-view-cache scroller="#app-main-scroller"></router-view-cache>
         </div>
       </el-main>
     </el-container>
@@ -37,8 +31,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import LayoutTabs from './LayoutTabs.vue'
-import useRouteCache from '@/hooks/useRouteCache'
+// import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
+import RouterViewCache, {useRouteCache} from '@/components/router-view-cache'
 
 const { caches } = useRouteCache()
 const layoutStore = useLayoutStore()
