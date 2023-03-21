@@ -13,7 +13,6 @@ const routes: RouteRecordRaw[] = [
         name: 'home',
         meta: {
           keepAlive: true,
-          resetScroll: true,
           title: '首页'
         }
       },

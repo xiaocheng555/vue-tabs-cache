@@ -3,8 +3,7 @@
     <keep-alive :include="caches" :max="max">
       <component
         :is="Component"
-        :router-view-cache-scroller="route.meta.scroller ?? scroller"
-        :router-view-cache-reset-scroll="route.meta.resetScroll ?? resetScroll" />
+        :router-view-cache-scroller="route.meta.scroller ?? scroller" />
     </keep-alive>
   </router-view>
 </template>
@@ -23,11 +22,6 @@ defineProps({
   // 最大缓存数
   max: {
     type: Number
-  },
-  // 重置滚动位置（0，0）
-  resetScroll: {
-    type: Boolean,
-    default: false
   }
 })
 

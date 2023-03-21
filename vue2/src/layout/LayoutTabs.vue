@@ -19,8 +19,9 @@
 </template>
 
 <script>
-import { mapMutations, mapActions } from 'vuex'
+import { mapMutations } from 'vuex'
 import EventBus from '@/utils/event-bus'
+import { routeCache } from '@/components/router-view-cache'
 
 export default {
   name: 'LayoutTabs',
@@ -51,11 +52,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('cache', [
-      'addCache', 
-      'removeCache',
-      'removeCacheEntry'
-    ]),
     ...mapMutations([
       'setIsRenderTab'
     ]),
@@ -80,7 +76,7 @@ export default {
       // 同一个路由，但是新旧路径不同时，需要清除路由缓存。例如route.path配置为 '/detail/:id'时路径会不同
       // 这里判断 props.tabRouteViewDepth === matched.length 必须是跟tab同级路由，否则会影响多级路由缓存
       if (tab && tab.path !== path && this.tabRouteViewDepth === matched.length) {
-        this.removeCacheEntry(componentName || '')
+        routeCache.removeCache(componentName || '')
         tab.title = ''
       }
       
@@ -121,7 +117,7 @@ export default {
         const lastTab = this.tabs[this.tabs.length - 1]
         lastTab && this.gotoTab(lastTab)
       }
-      this.removeCache(tab.componentName || '')
+      routeCache.removeCache(tab.componentName || '')
     },
     // 跳转tab页面
     async gotoTab (tab) {
@@ -136,21 +132,21 @@ export default {
       this.tabs
         .filter(tab => tab.tabKey !== this.curTabKey)
         .forEach(tab => {
-          this.removeCache(tab.componentName || '')
+          routeCache.removeCache(tab.componentName || '')
         })
       this.tabs = this.tabs.filter(tab => tab.tabKey === this.curTabKey)
     },
     // 刷新当前tab页面
     async refreshTab (tab) {
       this.setIsRenderTab(false)
-      await this.removeCacheEntry(tab.componentName)
+      await routeCache.removeCacheEntry(tab.componentName)
       this.setIsRenderTab(true)
     },
     // 关闭tab页面，默认关闭当前页
     async closeLayoutTab (tabKey = this.curTabKey) {
       const index = this.tabs.findIndex(tab => tab.tabKey === tabKey)
       if (index > -1) {
-        this.removeCache(this.tabs[index].componentName)
+        routeCache.removeCache(this.tabs[index].componentName)
         this.tabs.splice(index, 1) 
       }
     },

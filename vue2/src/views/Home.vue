@@ -5,7 +5,9 @@
       <br>
       <br>
       <h3>{{time}}, 你好呀!</h3>
+      
     </div>
+    <p v-for="i in 100" :key="i">{{ i }}</p>
   </div>
 </template>
 

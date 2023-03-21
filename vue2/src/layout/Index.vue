@@ -22,9 +22,7 @@
       <p style="color: #999; padding: 0 20px 5px;">缓存组件：{{caches}}</p>
       <el-main id="app-main-scroller">
         <div style="padding: 20px;">
-          <keep-alive :include="caches">
-            <router-view v-if="isRenderTab"></router-view>
-          </keep-alive>
+          <router-view-cache scroller="#app-main-scroller" :isRender="isRenderTab"></router-view-cache>
         </div>
       </el-main>
     </el-container>
@@ -34,13 +32,16 @@
 <script>
 import LayoutTabs from './LayoutTabs.vue'
 import { mapState } from 'vuex'
+import RouterViewCache, { routeCache } from '@/components/router-view-cache'
 
 export default {
   components: {
     LayoutTabs,
+    RouterViewCache
   },
   data () {
     return {
+      caches: routeCache.caches,
       menus: [
         {
           link: '/',
@@ -62,7 +63,6 @@ export default {
     }
   },
   computed: {
-    ...mapState('cache', ['caches']),
     ...mapState(['isRenderTab'])
   }
 }

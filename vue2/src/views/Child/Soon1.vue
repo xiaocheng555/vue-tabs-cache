@@ -33,7 +33,7 @@
 
 <script>
 import userData from '@/mock/user.json'
-import { mapActions } from 'vuex'
+import { routeCache } from '@/components/router-view-cache'
 
 export default {
   name: 'Soon1',
@@ -46,9 +46,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('cache', [
-      'removeCache',
-    ]),
     getData () {
       this.loading = true
       setTimeout(() => {
@@ -64,7 +61,7 @@ export default {
       const index = userData.findIndex(u => u.id === user.id)
       userData.splice(index, 1)
       this.getData()
-      this.removeCache('Soon2') // 清除另一个tab缓存
+      routeCache.removeCache('Soon2') // 清除另一个tab缓存
     }
   },
   watch: {

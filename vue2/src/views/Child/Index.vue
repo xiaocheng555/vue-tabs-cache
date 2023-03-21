@@ -13,25 +13,22 @@
         name="/soon2">
       </el-tab-pane>
     </el-tabs>
-    <keep-alive :include="caches">
-      <router-view></router-view>
-    </keep-alive>
+    <router-view-cache></router-view-cache>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import RouterViewCache from '@/components/router-view-cache'
 
 export default {
   name: 'Child',
-  keepScroll: true,
+  components: {
+    RouterViewCache
+  },
   data () {
     return {
       curTabName: this.$route.path
     }
-  },
-  computed: {
-    ...mapState('cache', ['caches']),
   },
   methods: {
     clickTab (pane) {

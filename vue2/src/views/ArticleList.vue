@@ -30,7 +30,6 @@ import articleData from '@/mock/article.json'
 
 export default {
   name: 'ArticleList',
-  keepScroll: true,
   data () {
     return {
       currentPage: 1, 

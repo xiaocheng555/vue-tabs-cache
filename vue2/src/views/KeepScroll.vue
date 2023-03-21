@@ -8,12 +8,13 @@
 <script>
 export default {
   name: 'KeepScroll',
-  keepScroll: true,
   data () {
     return {
     }
   },
-  created () {}
+  created () {
+    console.log('KeepScroll component')
+  }
 }
 </script>
 

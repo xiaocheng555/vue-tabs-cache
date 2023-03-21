@@ -15,7 +15,6 @@ import RouterViewCache from '@/components/router-view-cache'
 | 参数      | 说明          | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- |---------- |--------------------------------  |-------- |
 | scroller    | 设置滚动容器，能保持缓存路由的滚动位置 | String/Array | — | - |
-| resetScroll | 重置滚动位置为0，前提是设置了 scroller 滚动容器 | Boolean | false | - |
 | max         | 最大缓存数，同 `<keep-avlie>` 的max | - | — | - |
 
 ## 路由meta配置
@@ -23,8 +22,7 @@ import RouterViewCache from '@/components/router-view-cache'
 ``` js
 meta: {
   keepAlive: true, // 设置路由缓存
-  scroller: '#box', // 单独设置路由组件滚动容器；可设置多个，如 ['#box1', '#box2']
-  resetScroll: true // 重置当前路由组件滚动位置为0
+  scroller: '#box' // 单独设置路由组件滚动容器；可设置多个，如 ['#box1', '#box2']
 }
 ```
 

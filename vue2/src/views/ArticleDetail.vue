@@ -16,11 +16,10 @@
 <script>
 import articleData from '@/mock/article.json'
 import EventBus from '@/utils/event-bus'
-import { mapActions } from 'vuex'
+import { routeCache } from '@/components/router-view-cache'
 
 export default {
   name: 'ArticleDetail',
-  keepScroll: true,
   props: {
     id: {
       type: String
@@ -33,9 +32,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('cache', [
-      'removeCache'
-    ]),
     getArticle () {
       this.loading = true
       setTimeout(() => {
@@ -52,7 +48,7 @@ export default {
       this.$message.success('文章已删除')
       
       EventBus.$emit('LayoutTabs:closeTab') // 关闭当前tab页
-      this.removeCache('ArticleList') // 清除列表页缓存
+      routeCache.removeCache('ArticleList') // 清除列表页缓存
       this.$router.replace('/article') // 跳转列表页
     }
   },
