@@ -12,7 +12,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('./views/Home.vue'),
         name: 'home',
         meta: {
-          // keepAlive: true,
+          keepAlive: true,
+          resetScroll: true,
           title: '首页'
         }
       },

@@ -34,7 +34,6 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import articleData from '@/mock/article.json'
 import { IArticle } from './data.d'
-import useKeepScroll from '@/hooks/useKeepScroll'
 
 const router = useRouter()
 const list = ref<IArticle []>([])
@@ -45,7 +44,6 @@ const tableData = computed(() => {
   const start = pageSize.value * (currentPage.value - 1)
   return list.value.slice(start, start + pageSize.value)
 })
-// useKeepScroll()
 
 function getData () {
   loading.value = true

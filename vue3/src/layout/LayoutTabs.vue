@@ -64,7 +64,7 @@ const route = useRoute()
 const router = useRouter()
 const tabs = ref<Tab []>([])
 const curTabKey = ref('')
-const { removeCacheEntry, removeCache } = useRouteCache()
+const { removeCache } = useRouteCache()
 const layoutStore = useLayoutStore()
 
 // 切换tab页签

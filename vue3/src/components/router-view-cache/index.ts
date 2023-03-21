@@ -1,9 +1,7 @@
-import RouterViewCache from './router-view-cache.vue'
-import registerKeepScroll from './keepScroll'
+import RouterViewCache from './RouterViewCache.vue'
 import useRouteCache from './useRouteCache'
 
 export {
   RouterViewCache as default,
-  registerKeepScroll,
   useRouteCache
 }

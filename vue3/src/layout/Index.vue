@@ -3,8 +3,8 @@
     <el-aside width="200px">
       <el-scrollbar>
         <el-menu router>
-          <el-menu-item 
-            v-for="(menu, index) in menus" 
+          <el-menu-item
+            v-for="(menu, index) in menus"
             :index="String(index)"
             :route="{ path: menu.link }">
             {{menu.title}}
@@ -17,7 +17,7 @@
       <el-header style="text-align: right; font-size: 12px">
         <layout-tabs></layout-tabs>
       </el-header>
-      
+
       <p style="color: #999; padding: 0 20px 5px;">缓存组件：{{caches}}</p>
       <el-main id="app-main-scroller">
         <div style="padding: 20px;">
@@ -33,7 +33,7 @@ import { ref } from 'vue'
 import LayoutTabs from './LayoutTabs.vue'
 // import useRouteCache from '@/hooks/useRouteCache'
 import useLayoutStore from '@/store/layout'
-import RouterViewCache, {useRouteCache} from '@/components/router-view-cache'
+import RouterViewCache, { useRouteCache } from '@/components/router-view-cache'
 
 const { caches } = useRouteCache()
 const layoutStore = useLayoutStore()

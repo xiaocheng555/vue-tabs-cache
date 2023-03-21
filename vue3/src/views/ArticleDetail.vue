@@ -20,7 +20,6 @@ import { ElMessage } from 'element-plus'
 import type { IArticle } from './data'
 import articleData from '@/mock/article.json'
 import useRouteCache from '@/hooks/useRouteCache'
-import useKeepScroll from '@/hooks/useKeepScroll'
 import EventBus from '@/utils/event-bus'
 
 const props = defineProps({
@@ -33,7 +32,6 @@ const loading = ref(false)
 const article = ref<IArticle | null | undefined>(null)
 const router = useRouter()
 const { removeCache } = useRouteCache()
-// useKeepScroll()
 
 function getArticle () {
   loading.value = true
@@ -47,17 +45,17 @@ function getArticle () {
 }
 
 async function delArticle () {
-  const index = articleData.findIndex(data => data.id === Number(props.id)) 
+  const index = articleData.findIndex(data => data.id === Number(props.id))
   articleData.splice(index, 1)
   ElMessage.success('文章已删除')
-  
+
   EventBus.emit('LayoutTabs:closeTab') // 关闭当前tab
   removeCache('ArticleList') // 清除列表页缓存
   // 跳转列表页
   if (window.history.state?.back === '/article') {
     await router.go(-1)
   } else {
-    await router.replace('/article') 
+    await router.replace('/article')
   }
 }
 
